@@ -164,6 +164,96 @@ class layerVersion:
             XMLDeletedFeatures.appendChild(XMLDeletedFeat)
         return XMLDeletedFeatures                        
 
+
+    def getChangedAttributeValuesDom(self,XMLdoc,QFeatMap):
+        self.tra.ce("XML00")
+        self.tra.ce(QFeatMap)
+        XMLchangedAttributeValues = QDomElement()
+        XMLchangedAttributeValues = XMLdoc.createElement("CHANGEDATTRIBUTESVALUES")
+        for QId, QAttrs in QFeatMap.iteritems():
+            self.tra.ce(QId)
+            self.tra.ce(QAttrs)
+            XMLchangedAttributeValuesFeat = QDomElement()
+            XMLchangedAttributeValuesFeat = XMLdoc.createElement("FEAT")
+            XMLchangedAttributeValuesFeatID = QDomElement()
+            XMLchangedAttributeValuesFeatID = XMLdoc.createElement("ID")
+            XMLchangedAttributeValuesFeatATTRS = QDomElement()
+            XMLchangedAttributeValuesFeatATTRS = XMLdoc.createElement("ATTRIBUTES")
+            XMLchangedAttributeValuesFeatID.appendChild(XMLdoc.createTextNode(str(QId)))
+            self.tra.ce("XML0")
+            for attrIdx, attrValue in QAttrs.iteritems():
+                self.tra.ce("ATTR:"+str(attrIdx))
+                XMLchangedAttributeValuesFeatATTR = QDomElement()
+                XMLchangedAttributeValuesFeatATTR = XMLdoc.createElement("ATTR")
+                XMLchangedAttributeValuesFeatATTRID = QDomElement()
+                XMLchangedAttributeValuesFeatATTRID = XMLdoc.createElement("ATTRID")
+                XMLchangedAttributeValuesFeatATTRID.appendChild(XMLdoc.createTextNode(str(attrIdx)))
+                XMLchangedAttributeValuesFeatATTRName = QDomElement()
+                XMLchangedAttributeValuesFeatATTRName = XMLdoc.createElement("ATTRNAME")
+                XMLchangedAttributeValuesFeatATTRType = QDomElement()
+                XMLchangedAttributeValuesFeatATTRType = XMLdoc.createElement("ATTRTYPE")
+                XMLchangedAttributeValuesFeatATTRValue = QDomElement()
+                XMLchangedAttributeValuesFeatATTRValue = XMLdoc.createElement("ATTRVALUE")
+                XMLchangedAttributeValuesFeatATTRValue.appendChild(XMLdoc.createTextNode(str(attrValue)))
+                self.tra.ce(str(attrValue))
+                self.tra.ce("XML1")
+                XMLchangedAttributeValuesFeatATTR.appendChild(XMLchangedAttributeValuesFeatATTRID)
+                XMLchangedAttributeValuesFeatATTR.appendChild(XMLchangedAttributeValuesFeatATTRName)
+                XMLchangedAttributeValuesFeatATTR.appendChild(XMLchangedAttributeValuesFeatATTRType)
+                XMLchangedAttributeValuesFeatATTR.appendChild(XMLchangedAttributeValuesFeatATTRValue)
+                XMLchangedAttributeValuesFeatATTRS.appendChild(XMLchangedAttributeValuesFeatATTR)
+            self.tra.ce("XML2:")
+            XMLchangedAttributeValuesFeat.appendChild(XMLchangedAttributeValuesFeatID)
+            XMLchangedAttributeValuesFeat.appendChild(XMLchangedAttributeValuesFeatATTRS)
+            XMLchangedAttributeValues.appendChild(XMLchangedAttributeValuesFeat)
+        return XMLchangedAttributeValues
+
+    def getAddedAttributesDom(self,XMLdoc,QNewAttrs):
+        XMLAddedAttributes = QDomElement()
+        XMLAddedAttributes = XMLdoc.createElement("ADDEDATTRIBUTES")
+        for newAttr in QNewAttrs:
+            XMLAddedAttribute = QDomElement()
+            XMLAddedAttribute = XMLdoc.createElement("ATTR")
+            XMLAddedAttributeName = QDomElement()
+            XMLAddedAttributeName = XMLdoc.createElement("NAME")
+            XMLAddedAttributeName.appendChild(XMLdoc.createTextNode(newAttr.name()))
+            XMLAddedAttributeType = QDomElement()
+            XMLAddedAttributeType = XMLdoc.createElement("TYPE")
+            XMLAddedAttributeType.appendChild(XMLdoc.createTextNode(str(newAttr.type())))
+            XMLAddedAttributeTypeName = QDomElement()
+            XMLAddedAttributeTypeName = XMLdoc.createElement("TYPENAME")
+            XMLAddedAttributeTypeName.appendChild(XMLdoc.createTextNode(newAttr.typeName()))
+            XMLAddedAttributeLength = QDomElement()
+            XMLAddedAttributeLength = XMLdoc.createElement("LENGTH")
+            XMLAddedAttributeLength.appendChild(XMLdoc.createTextNode(str(newAttr.length())))
+            XMLAddedAttributePrecision = QDomElement()
+            XMLAddedAttributePrecision = XMLdoc.createElement("PRECISION")
+            XMLAddedAttributePrecision.appendChild(XMLdoc.createTextNode(str(newAttr.precision())))
+            XMLAddedAttributeComment = QDomElement()
+            XMLAddedAttributeComment = XMLdoc.createElement("COMMENT")
+            XMLAddedAttributeComment.appendChild(XMLdoc.createTextNode(str(newAttr.comment())))
+            XMLAddedAttribute.appendChild(XMLAddedAttributeName)
+            XMLAddedAttribute.appendChild(XMLAddedAttributeType)
+            XMLAddedAttribute.appendChild(XMLAddedAttributeTypeName)
+            XMLAddedAttribute.appendChild(XMLAddedAttributeLength)
+            XMLAddedAttribute.appendChild(XMLAddedAttributePrecision)
+            XMLAddedAttribute.appendChild(XMLAddedAttributeComment)
+            XMLAddedAttributes.appendChild(XMLAddedAttribute)
+        return XMLAddedAttributes
+
+
+    def getDeletedAttributesDom(self,XMLdoc,QAttrsId):
+        self.tra.ce("XMLc00")
+        self.tra.ce(QAttrsId)
+        XMLDeletedAttributes = QDomElement()
+        XMLDeletedAttributes = XMLdoc.createElement("DELETEDATTRIBUTES")
+        for attrId in QAttrsId:
+            XMLDeletedAttribute = QDomElement()
+            XMLDeletedAttribute = XMLdoc.createElement("ATTRID")
+            XMLDeletedAttribute.appendChild(XMLdoc.createTextNode(str(attrId)))
+            XMLDeletedAttributes.appendChild(XMLDeletedAttribute)
+        return XMLDeletedAttributes
+
     # run method that performs all the real work
     def run(self):
         vLayer = self.iface.legendInterface().currentLayer()
@@ -185,8 +275,19 @@ class layerVersion:
         XMLvLayer.appendChild(self.getChangedFeaturesDom(XMLDocument,uncommitBuffer.changedGeometries ()))
         XMLDocument.appendChild(XMLvLayer)
         self.tra.ce( XMLDocument.toString(2))
-        #STAGE2 - DeletedFeatures
+        #STAGE3 - DeletedFeatures
         XMLvLayer.appendChild(self.getDeletedFeaturesDom(XMLDocument,uncommitBuffer.deletedFeatureIds ()))
+        XMLDocument.appendChild(XMLvLayer)
+        self.tra.ce( XMLDocument.toString(2))
+        #STAGE4 - changedAttributeValues
+        XMLvLayer.appendChild(self.getChangedAttributeValuesDom(XMLDocument,uncommitBuffer.changedAttributeValues ()))
+        XMLDocument.appendChild(XMLvLayer)
+        self.tra.ce( XMLDocument.toString(2))
+        #STAGE5 - addedAttributes
+        XMLvLayer.appendChild(self.getAddedAttributesDom(XMLDocument,uncommitBuffer.addedAttributes ()))
+        XMLDocument.appendChild(XMLvLayer)
+        #STAGE6 - addedAttributes
+        XMLvLayer.appendChild(self.getDeletedAttributesDom(XMLDocument,uncommitBuffer.deletedAttributeIds ()))
         XMLDocument.appendChild(XMLvLayer)
         self.tra.ce( XMLDocument.toString(2))
         # show the dialog
