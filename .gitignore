@@ -7,3 +7,4 @@ scripts/
 test/
 .idea/
 .DS_Store
+versions/

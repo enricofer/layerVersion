@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/plugins/layerversion" >
-        <file>icon.png</file>
+        <file>icon1.png</file>
+    </qresource>
+    <qresource prefix="/plugins/layerversion" >
+        <file>icon2.png</file>
     </qresource>
 </RCC>
