@@ -10,9 +10,9 @@
 
 [general]
 name=layerVersion
-qgisMinimumVersion=2.0
-description=layerVersion
-version=0.1
+qgisMinimumVersion=2.8
+description= personal versioning system
+version=1.0
 author=Enrico Ferreguti
 email=enricofer@gmail.com
 
@@ -24,14 +24,14 @@ email=enricofer@gmail.com
 # changelog=
 
 # tags are comma separated with spaces allowed
-tags=
+tags= version, versioning, layers, edit buffer, edits, vector
 
-homepage=
-tracker=
-repository=
-icon=icon.png
+homepage=http://geogear.wordpress.com
+tracker=https://github.com/enricofer/layerVersion/issues
+repository=https://github.com/enricofer/layerVersion
+icon=save.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version
 deprecated=False
