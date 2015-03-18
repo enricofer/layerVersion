@@ -82,6 +82,8 @@ class layerVersion:
         self.iface.addPluginToVectorMenu(u"&layerVersion", self.actionSave)
         self.iface.addToolBarIcon(self.actionLoad)
         self.iface.addPluginToVectorMenu(u"&layerVersion", self.actionLoad)
+        self.workDir = None
+        self.iface.projectRead.connect(self.projectReadAction)
 
     def unload(self):
         # Remove the plugin menu item and icon
@@ -90,12 +92,19 @@ class layerVersion:
         self.iface.removePluginVectorMenu(u"&layerVersion", self.actionLoad)
         self.iface.removeToolBarIcon(self.actionLoad)
 
-
+    def projectReadAction(self):
+        newPath = QgsProject.instance().readPath("./")
+        if newPath != "./":
+            self.workDir = newPath
+        self.tra.ce(self.workDir)
 
     # run method that performs all the real work
     def save(self):
+        if not self.workDir:
+            self.workDir = QgsProject.instance().readPath("./")
+        self.tra.ce(self.workDir)
         if self.iface.editableLayers():
-            fileName = QFileDialog.getSaveFileName(None,"Save Qgis LayerEditsVersion definition", QgsProject.instance().readPath("./"), "*.qlv");
+            fileName = QFileDialog.getSaveFileName(None,"Save Qgis LayerEditsVersion definition", self.workDir, "*.qlv");
             self.tra.ce(fileName)
             if fileName:
                 DOM = self.editingStateSaver.getEditsXMLDefinition()
@@ -103,12 +112,18 @@ class layerVersion:
                     outFile = open(fileName, "w")
                     outFile.write(DOM.toString().encode('utf-8'))
                     outFile.close
+                    self.workDir = QFileInfo(fileName).path()
+                    self.tra.ce(self.workDir)
         else:
             QMessageBox.critical(None, "Alert", "No Layers in Editing mode, No version to save")
 
 
     def load(self):
         #if self.iface.editableLayers():
-        fileName = QFileDialog.getOpenFileName(None,"Open Qgis LayerEditsVersion definition", QgsProject.instance().readPath("./"), "*.qlv");
+        if not self.workDir:
+            self.workDir = QgsProject.instance().readPath("./")
+        fileName = QFileDialog.getOpenFileName(None,"Open Qgis LayerEditsVersion definition", self.workDir, "*.qlv");
         if fileName:
             self.editingStateLoader.setEditsXMLDefinition(fileName)
+            self.workDir = QFileInfo(fileName).dir()
+            self.tra.ce(self.path)
