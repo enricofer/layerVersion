@@ -1,0 +1,3 @@
+v1.0   Experimental. First release
+
+v1.0.1 Experimental. Keep working directory in dialogs

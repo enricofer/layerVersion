@@ -21,7 +21,7 @@ email=enricofer@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-# changelog=
+changelog = v1.0.1 Keep working directory in dialogs
 
 # tags are comma separated with spaces allowed
 tags= version, versioning, layers, edit buffer, edits, vector
