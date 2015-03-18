@@ -38,7 +38,7 @@ import os.path
 class trace:
 
     def __init__(self):
-        self.trace = None
+        self.trace = True
         
     def ce(self,string):
         if self.trace:
@@ -104,7 +104,20 @@ class layerVersion:
             self.workDir = QgsProject.instance().readPath("./")
         self.tra.ce(self.workDir)
         if self.iface.editableLayers():
-            fileName = QFileDialog.getSaveFileName(None,"Save Qgis LayerEditsVersion definition", self.workDir, "*.qlv");
+            #saveQlvDialog = QFileDialog()
+            #saveQlvDialog.setDefaultSuffix("qlv")
+            #saveQlvDialog.setAcceptMode(QFileDialog.AcceptSave)
+            #saveQlvDialog.setDirectory(self.workDir)
+            #saveQlvDialog.exec_()
+            #fileName = saveQlvDialog.selectedFiles()[0]
+            fileName = QFileDialog().getSaveFileName(None,"Save Qgis LayerEditsVersion definition", self.workDir, "*.qlv");
+            if QFileInfo(fileName).suffix() != "qlv":
+                fileName += ".qlv"
+                if QFileInfo(fileName).exists():
+                    reply = QMessageBox.question(None, 'confirm', "File %s exists. \nOverwrite?" % fileName, QMessageBox.Yes, QMessageBox.No)
+                    if reply == QMessageBox.No:
+                        fileName = None
+
             self.tra.ce(fileName)
             if fileName:
                 DOM = self.editingStateSaver.getEditsXMLDefinition()
