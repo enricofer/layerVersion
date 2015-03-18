@@ -12,7 +12,7 @@
 name=layerVersion
 qgisMinimumVersion=2.0
 description= personal versioning system
-version=1.0.1
+version=1.0.2
 author=Enrico Ferreguti
 email=enricofer@gmail.com
 
@@ -21,7 +21,7 @@ email=enricofer@gmail.com
 # Optional items:
 
 # Uncomment the following line and add your changelog entries:
-changelog = v1.0.1 Keep working directory in dialogs
+changelog = v1.0.2 file extension in linux dialogs issue fixed
 
 # tags are comma separated with spaces allowed
 tags= version, versioning, layers, edit buffer, edits, vector

@@ -1,3 +1,5 @@
 v1.0   Experimental. First release
 
 v1.0.1 Experimental. Keep working directory in dialogs
+
+v1.0.2 Experimental. File extension in linux dialogs issue fixed
