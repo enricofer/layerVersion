@@ -125,5 +125,5 @@ class layerVersion:
         fileName = QFileDialog.getOpenFileName(None,"Open Qgis LayerEditsVersion definition", self.workDir, "*.qlv");
         if fileName:
             self.editingStateLoader.setEditsXMLDefinition(fileName)
-            self.workDir = QFileInfo(fileName).dir()
+            self.workDir = QFileInfo(fileName).path()
             self.tra.ce(self.path)
